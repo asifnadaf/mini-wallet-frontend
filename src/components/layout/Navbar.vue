@@ -47,7 +47,8 @@
                 @click="showUserMenu = false">
                 {{ t('navigation.profile') }}
               </router-link>
-              <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button @click="handleLogout"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 {{ t('navigation.logout') }}
               </button>
             </div>
@@ -78,7 +79,7 @@
               @click="showMobileMenu = false">
               {{ t('navigation.profile') }}
             </router-link>
-            <button
+            <button @click="handleLogout"
               class="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-md">
               {{ t('navigation.logout') }}
             </button>
@@ -127,6 +128,12 @@
     }
   }
 
+  const handleLogout = async () => {
+    showUserMenu.value = false
+    showMobileMenu.value = false
+    await authStore.logout()
+    router.push('/login')
+  }
 
   const handleClickOutside = (event) => {
     if (userMenuRef.value && !userMenuRef.value.contains(event.target)) {
