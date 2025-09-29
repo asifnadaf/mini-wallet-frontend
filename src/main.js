@@ -1,30 +1,14 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createRouter, createWebHistory } from 'vue-router'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import './assets/css/main.css'
 import App from './App.vue'
+import router from './router'
 
-// Create Pinia store
-const pinia = createPinia()
-
-// Create router
-const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-        {
-            path: '/',
-            name: 'Home',
-            component: () => import('./views/Home.vue')
-        }
-    ]
-})
-
-// Create Vue app
 const app = createApp(App)
 
-app.use(pinia)
+app.use(createPinia())
 app.use(router)
 app.use(Toast, {
     position: 'top-right',
