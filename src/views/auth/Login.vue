@@ -5,7 +5,7 @@
       <div class="text-center">
         <Logo />
       </div>
-      
+
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {{ t('auth.login.title') }}
@@ -17,34 +17,20 @@
           </router-link>
         </p>
       </div>
-      
+
       <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
         <div class="space-y-4">
           <div>
             <label for="email" class="form-label">{{ t('auth.login.email') }}</label>
-            <input
-              id="email"
-              v-model="form.email"
-              type="email"
-              required
-              class="input"
-              :class="{ 'input-error': errors.email }"
-              :placeholder="t('auth.login.emailPlaceholder')"
-            />
+            <input id="email" v-model="form.email" type="email" required class="input"
+              :class="{ 'input-error': errors.email }" :placeholder="t('auth.login.emailPlaceholder')" />
             <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
           </div>
-          
+
           <div>
             <label for="password" class="form-label">{{ t('auth.login.password') }}</label>
-            <input
-              id="password"
-              v-model="form.password"
-              type="password"
-              required
-              class="input"
-              :class="{ 'input-error': errors.password }"
-              :placeholder="t('auth.login.passwordPlaceholder')"
-            />
+            <input id="password" v-model="form.password" type="password" required class="input"
+              :class="{ 'input-error': errors.password }" :placeholder="t('auth.login.passwordPlaceholder')" />
             <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
           </div>
         </div>
@@ -62,15 +48,14 @@
         </div>
 
         <div>
-          <button
-            type="submit"
-            :disabled="loading"
-            class="btn btn-primary w-full"
-          >
+          <button type="submit" :disabled="loading" class="btn btn-primary w-full">
             <span v-if="loading" class="flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
               </svg>
               {{ t('auth.login.signingIn') }}
             </span>
@@ -83,48 +68,47 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { useLabels } from '@/composables/useLabels'
-import Logo from '@/components/common/Logo.vue'
+  import { ref, reactive } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth'
+  import { useLabels } from '@/composables/useLabels'
+  import Logo from '@/components/common/Logo.vue'
 
-const router = useRouter()
-const authStore = useAuthStore()
-const { t } = useLabels()
+  const router = useRouter()
+  const authStore = useAuthStore()
+  const { t } = useLabels()
 
-const form = reactive({
-  email: '',
-  password: ''
-})
+  const form = reactive({
+    email: '',
+    password: ''
+  })
 
-const errors = ref({})
-const loading = ref(false)
+  const errors = ref({})
+  const loading = ref(false)
 
-const handleLogin = async () => {
-  errors.value = {}
-  loading.value = true
+  const handleLogin = async () => {
+    errors.value = {}
+    loading.value = true
 
-  try {
-    const response = await authStore.login(form)
-    
-    // Use replace instead of push to avoid history issues
-    // Add small delay to ensure auth state is properly updated
-    setTimeout(() => {
-      router.replace('/')
-    }, 100)
-  } catch (error) {
-    console.error('Login error:', error)
-    if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
-    } else if (error.response?.data?.message) {
-      errors.value = { general: error.response.data.message }
-    } else {
-      errors.value = { general: 'Login failed. Please try again.' }
+    try {
+      const response = await authStore.login(form)
+
+      // Use replace instead of push to avoid history issues
+      // Add small delay to ensure auth state is properly updated
+      setTimeout(() => {
+        router.replace('/')
+      }, 100)
+    } catch (error) {
+      console.error('Login error:', error)
+      if (error.response?.data?.errors) {
+        errors.value = error.response.data.errors
+      } else if (error.response?.data?.message) {
+        errors.value = { general: error.response.data.message }
+      } else {
+        errors.value = { general: 'Login failed. Please try again.' }
+      }
+    } finally {
+      loading.value = false
     }
-  } finally {
-    loading.value = false
   }
-}
 </script>
-
