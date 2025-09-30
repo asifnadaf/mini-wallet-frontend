@@ -14,7 +14,10 @@
           <router-link to="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">
             {{ t('navigation.dashboard') }}
           </router-link>
-
+          <router-link to="/transactions"
+            class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">
+            {{ t('navigation.transactions') }}
+          </router-link>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -64,6 +67,11 @@
             class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-md"
             @click="showMobileMenu = false">
             {{ t('navigation.dashboard') }}
+          </router-link>
+          <router-link to="/transactions"
+            class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-md"
+            @click="showMobileMenu = false">
+            {{ t('navigation.transactions') }}
           </router-link>
 
           <!-- Mobile User Section -->

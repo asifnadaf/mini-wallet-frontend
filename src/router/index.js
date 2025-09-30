@@ -44,6 +44,18 @@ const routes = [
         component: () => import('@/views/auth/EmailVerification.vue'),
         meta: { requiresAuth: true }
     },
+    {
+        path: '/transactions',
+        name: 'transactions',
+        component: () => import('@/views/Transactions.vue'),
+        meta: { requiresAuth: true, requiresEmailVerified: true }
+    },
+    {
+        path: '/transactions/create',
+        name: 'create-transaction',
+        component: () => import('@/views/CreateTransaction.vue'),
+        meta: { requiresAuth: true, requiresEmailVerified: true }
+    }
 ]
 
 const router = createRouter({
