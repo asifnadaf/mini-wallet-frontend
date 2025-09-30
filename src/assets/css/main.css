@@ -76,4 +76,8 @@
     .container {
         @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
     }
+
+    .error-message {
+        @apply text-red-600 text-sm mt-1;
+    }
 }
