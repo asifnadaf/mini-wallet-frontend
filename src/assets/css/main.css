@@ -5,6 +5,26 @@
 @layer base {
     html {
         font-family: 'Inter', system-ui, sans-serif;
+        /* Prevent scrollbar from causing layout shift */
+        overflow-y: scroll;
+    }
+
+    body {
+        /* Ensure consistent scrollbar behavior */
+        overflow-y: scroll;
+        /* Reserve space for scrollbar to prevent layout shift */
+        scrollbar-gutter: stable;
+        /* Fallback for browsers that don't support scrollbar-gutter */
+        width: 100vw;
+        box-sizing: border-box;
+    }
+
+    /* Additional fallback for older browsers */
+    html {
+        /* Force scrollbar to always be visible */
+        overflow-y: scroll;
+        /* Prevent horizontal scrollbar */
+        overflow-x: hidden;
     }
 }
 
