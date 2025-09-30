@@ -48,7 +48,11 @@ api.interceptors.response.use(
             } catch (storageError) {
                 console.error('Error clearing sessionStorage:', storageError)
             }
-            window.location.href = '/login'
+
+            // Only redirect to login if not already on login page
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                window.location.href = '/login'
+            }
         }
 
         const message = error.response?.data?.message || 'An error occurred'
