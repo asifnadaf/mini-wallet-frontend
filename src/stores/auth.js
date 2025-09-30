@@ -163,9 +163,24 @@ export const useAuthStore = defineStore('auth', {
                     sessionStorage.setItem('user', JSON.stringify(user))
                     sessionStorage.setItem('auth_token', token)
                 }
+
+                // Trigger Pusher reinitialization with new token
+                this.triggerPusherReinit()
             } catch (error) {
                 console.error('Error setting auth in sessionStorage:', error)
             }
+        },
+
+        triggerPusherReinit() {
+            // Import pusherService dynamically to avoid circular dependencies
+            import('@/services/pusherService').then(({ default: pusherService }) => {
+                if (pusherService && pusherService.forceReinitialize) {
+                    console.log('🔄 Triggering Pusher reinitialization after auth update...')
+                    pusherService.forceReinitialize()
+                }
+            }).catch(error => {
+                console.warn('Could not trigger Pusher reinitialization:', error)
+            })
         },
 
         clearAuth() {

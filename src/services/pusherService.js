@@ -1,4 +1,5 @@
 import Pusher from 'pusher-js'
+import { useAuthStore } from '@/stores/auth'
 
 class PusherService {
     constructor() {
@@ -63,20 +64,18 @@ class PusherService {
 
     getAuthToken() {
         try {
+            // Get token from auth store first
+            const authStore = useAuthStore()
+            if (authStore.token) {
+                return authStore.token
+            }
+
+            // Fallback to sessionStorage if store is not available
             if (typeof window !== 'undefined' && window.sessionStorage) {
-                // Try to get Sanctum token from sessionStorage
-                const token = sessionStorage.getItem('auth_token') || sessionStorage.getItem('sanctum_token')
+                const token = sessionStorage.getItem('auth_token')
                 if (token) {
                     return token
                 }
-
-                // Fallback: try to get from localStorage
-                const localToken = localStorage.getItem('auth_token') || localStorage.getItem('sanctum_token')
-                if (localToken) {
-                    return localToken
-                }
-
-                return ''
             }
             return ''
         } catch (error) {
@@ -177,10 +176,33 @@ class PusherService {
     // Method to refresh authentication if needed
     refreshAuth() {
         const token = this.getAuthToken()
-        if (token && this.pusher) {
+        if (token) {
             // Reinitialize Pusher with new token
             this.disconnect()
             this.initialize()
+            return true
+        }
+        return false
+    }
+
+    // Method to force reinitialize with fresh token
+    forceReinitialize() {
+        console.log('🔄 Force reinitializing Pusher with fresh token...')
+        this.disconnect()
+        return this.initialize()
+    }
+
+    // Method to update auth headers without reinitializing
+    updateAuthHeaders() {
+        const token = this.getAuthToken()
+        if (this.pusher && token) {
+            // Update the auth headers for future requests
+            this.pusher.config.auth = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            }
             return true
         }
         return false

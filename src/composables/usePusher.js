@@ -15,7 +15,8 @@ export function usePusher() {
                 console.warn('⚠️ Sanctum authentication failed - Pusher may not work properly')
             }
 
-            const pusher = pusherService.initialize()
+            // Force reinitialize to ensure we get the latest token
+            const pusher = pusherService.forceReinitialize()
             if (pusher) {
                 isConnected.value = pusherService.isConnected
             } else {
