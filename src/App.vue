@@ -8,6 +8,7 @@
 <script>
     import { computed } from 'vue'
     import { useAuthStore } from './stores/auth'
+    import { useActivityTracker } from './composables/useActivityTracker'
     import Navbar from './components/layout/Navbar.vue'
 
     export default {
@@ -17,6 +18,9 @@
         },
         setup() {
             const authStore = useAuthStore()
+
+            // Initialize activity tracker
+            useActivityTracker()
 
             const isAuthenticated = computed(() => authStore.isAuthenticated)
 
