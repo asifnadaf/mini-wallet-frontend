@@ -9,8 +9,8 @@ export function useActivityTracker(options = {}) {
     const route = useRoute()
 
     // Configuration - allow override for testing
-    const INACTIVITY_TIMEOUT = options.inactivityTimeout || 2 * 60 * 1000 // 2 minutes in milliseconds
-    const WARNING_TIME = options.warningTime || 1 * 60 * 1000 // 1 minute before logout (1 minute warning)
+    const INACTIVITY_TIMEOUT = options.inactivityTimeout || 10 * 60 * 1000 // 10 minutes in milliseconds
+    const WARNING_TIME = options.warningTime || 2 * 60 * 1000 // 2 minutes before logout (1 minute warning)
 
     // Routes where activity tracking should be enabled
     const trackedRoutes = [
@@ -34,6 +34,7 @@ export function useActivityTracker(options = {}) {
     const isActive = ref(true)
     const lastActivity = ref(Date.now())
     const warningShown = ref(false)
+    const warningToastId = ref(null)
 
     // Timer references
     let inactivityTimer = null
@@ -56,6 +57,12 @@ export function useActivityTracker(options = {}) {
 
         lastActivity.value = Date.now()
         isActive.value = true
+
+        // Dismiss warning toast if it exists
+        if (warningToastId.value) {
+            toast.dismiss(warningToastId.value)
+            warningToastId.value = null
+        }
         warningShown.value = false
 
         // Clear existing timers
@@ -86,7 +93,7 @@ export function useActivityTracker(options = {}) {
         if (warningShown.value || !authStore.isAuthenticated) return
 
         warningShown.value = true
-        toast.warning('You will be logged out in 1 minute due to inactivity', {
+        warningToastId.value = toast.warning('You will be logged out in 1 minute due to inactivity', {
             timeout: 60000, // 1 minute
             closeOnClick: false,
             pauseOnFocusLoss: false,
@@ -115,7 +122,11 @@ export function useActivityTracker(options = {}) {
         }
         // If warning was already shown, show it again
         else if (warningShown.value) {
-            toast.warning('You will be logged out in 1 minute due to inactivity', {
+            // Dismiss existing warning first
+            if (warningToastId.value) {
+                toast.dismiss(warningToastId.value)
+            }
+            warningToastId.value = toast.warning('You will be logged out in 1 minute due to inactivity', {
                 timeout: 60000,
                 closeOnClick: false,
                 pauseOnFocusLoss: false,
@@ -191,6 +202,12 @@ export function useActivityTracker(options = {}) {
         if (warningTimer) {
             clearTimeout(warningTimer)
             warningTimer = null
+        }
+
+        // Dismiss warning toast if it exists
+        if (warningToastId.value) {
+            toast.dismiss(warningToastId.value)
+            warningToastId.value = null
         }
 
         // Reset state
