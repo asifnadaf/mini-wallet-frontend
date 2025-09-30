@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <Navbar v-if="isAuthenticated" />
-        <router-view />
+        <main :class="{ 'with-navbar': isAuthenticated }">
+            <router-view />
+        </main>
     </div>
 </template>
 
@@ -31,4 +33,9 @@
     }
 </script>
 
-<style></style>
+<style>
+    .with-navbar {
+        padding-top: 3rem;
+        padding-bottom: 4rem;
+    }
+</style>
